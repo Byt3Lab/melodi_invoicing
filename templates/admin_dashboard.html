@@ -1,0 +1,304 @@
+<div class="p-4">
+  <!-- Header Section -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <h4 class="mb-0 fw-bold text-dark">{{ t('invoicing.title', 'Gestion de la Facturation') }}</h4>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1">
+          <img src="/static_base_icons?name=receipt_long&fill=%230b5ed7"
+            style="width:14px;height:14px;vertical-align:-2px;" class="me-1">
+          {{ t('invoicing.title', 'Factures & Recouvrement') }}
+        </span>
+      </div>
+      <p class="text-muted small mb-0">{{ t('invoicing.overview_subtitle', 'Vue globale des factures clients, factures fournisseurs, paiements reçus et encours de paiement.') }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="/admin/melodi_invoicing/invoices/create" id="btn-create-invoice"
+        class="btn btn-primary btn-sm px-3 shadow-sm d-inline-flex align-items-center gap-1">
+        <img src="/static_base_icons?name=add&fill=white" style="width:16px;height:16px;">
+        {{ t('invoicing.new_invoice', 'Nouvelle Facture') }}
+      </a>
+      <a href="/admin/melodi_invoicing/invoices" id="btn-all-invoices"
+        class="btn btn-outline-dark btn-sm px-3 shadow-sm d-inline-flex align-items-center gap-1">
+        <img src="/static_base_icons?name=receipt&fill=%23212529" style="width:16px;height:16px;">
+        {{ t('invoicing.all_invoices', 'Toutes les Factures') }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Stat Cards Row -->
+  <div class="row g-3 mb-4">
+    <!-- Total Invoiced Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #0b5ed7 0%, #1d4ed8 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('invoicing.total_invoiced', 'Total Facturé') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">{{ "%.2f"|format(stats.total_invoiced) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=receipt_long&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('invoicing.total_volume', 'Volume Total') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ t('invoicing.invoices_count', '[count] Factures', context={'count': stats.total_count}) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Paid Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('invoicing.amount_collected', 'Montant Encaissé') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">{{ "%.2f"|format(stats.total_paid) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=check_circle&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('invoicing.validated_payments', 'Paiements Validés') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ stats.paid_count }} {{ t('invoicing.paid_status', 'Réglées') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unpaid Balance Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('invoicing.to_collect', 'Reste à Recouvrer') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">{{ "%.2f"|format(stats.total_unpaid) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=pending&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('invoicing.to_collect', 'Encours de Réductions') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ stats.partially_paid_count + stats.validated_count
+              }} {{ t('invoicing.to_settle', 'À solder') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Draft / Pending Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('invoicing.status_draft', 'Brouillons') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">{{ stats.draft_count }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=edit_note&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('invoicing.pending_validation', 'En Attente de Validation') }}</span>
+            <a href="/admin/melodi_invoicing/invoices?status=DRAFT"
+              class="text-white text-decoration-none fw-semibold opacity-75 opacity-100-hover">{{ t('invoicing.see_link', 'Voir') }} &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Summary Bar & Types -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+          <h6 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <img src="/static_base_icons?name=pie_chart&fill=%230b5ed7" style="width:18px;height:18px;">
+            {{ t('invoicing.status_distribution', 'Répartition des Statuts de Factures') }}
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row text-center g-2 mb-3">
+            <div class="col">
+              <div class="p-2 rounded bg-secondary-subtle border">
+                <div class="small text-muted">{{ t('invoicing.status_draft', 'Brouillons') }}</div>
+                <div class="fw-bold text-dark fs-5">{{ stats.draft_count }}</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-2 rounded bg-info-subtle border border-info-subtle">
+                <div class="small text-info-emphasis">{{ t('invoicing.status_validated', 'Validées') }}</div>
+                <div class="fw-bold text-info-emphasis fs-5">{{ stats.validated_count }}</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-2 rounded bg-warning-subtle border border-warning-subtle">
+                <div class="small text-warning-emphasis">{{ t('invoicing.partial', 'Partielles') }}</div>
+                <div class="fw-bold text-warning-emphasis fs-5">{{ stats.partially_paid_count }}</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-2 rounded bg-success-subtle border border-success-subtle">
+                <div class="small text-success">{{ t('invoicing.status_paid', 'Payées') }}</div>
+                <div class="fw-bold text-success fs-5">{{ stats.paid_count }}</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-2 rounded bg-danger-subtle border border-danger-subtle">
+                <div class="small text-danger">{{ t('invoicing.status_cancelled', 'Annulées') }}</div>
+                <div class="fw-bold text-danger fs-5">{{ stats.cancelled_count }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collection Progress Bar -->
+          {% set collection_rate = (stats.total_paid / stats.total_invoiced * 100) if stats.total_invoiced > 0 else 0 %}
+          <div class="mt-3">
+            <div class="d-flex justify-content-between align-items-center small mb-1">
+              <span class="text-muted fw-semibold">{{ t('invoicing.global_recovery_rate', 'Taux de Recouvrement Global') }}</span>
+              <span class="fw-bold text-success">{{ "%.1f"|format(collection_rate) }}%</span>
+            </div>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ collection_rate }}%;"
+                aria-valuenow="{{ collection_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 rounded-3 h-100">
+        <div class="card-header bg-white py-3 border-0">
+          <h6 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <img src="/static_base_icons?name=category&fill=%234f46e5" style="width:18px;height:18px;">
+            {{ t('invoicing.billing_types', 'Types de Facturation') }}
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 mb-3 border">
+            <div class="d-flex align-items-center gap-2">
+              <div class="rounded-circle p-2 bg-primary-subtle">
+                <img src="/static_base_icons?name=person&fill=%230b5ed7" style="width:20px;height:20px;">
+              </div>
+              <div>
+                <div class="fw-bold text-dark">{{ t('invoicing.customer_sales_invoices', 'Factures Ventes Clients') }}</div>
+                <div class="small text-muted">{{ t('invoicing.claims_receivable', 'Créances à recevoir') }}</div>
+              </div>
+            </div>
+            <span class="badge bg-primary rounded-pill fs-6 px-3">{{ stats.customer_count }}</span>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border">
+            <div class="d-flex align-items-center gap-2">
+              <div class="rounded-circle p-2 bg-warning-subtle">
+                <img src="/static_base_icons?name=store&fill=%23d97706" style="width:20px;height:20px;">
+              </div>
+              <div>
+                <div class="fw-bold text-dark">{{ t('invoicing.vendor_purchases_invoices', 'Factures Achats Fournisseurs') }}</div>
+                <div class="small text-muted">{{ t('invoicing.debts_payable', 'Dettes à régler') }}</div>
+              </div>
+            </div>
+            <span class="badge bg-warning text-dark rounded-pill fs-6 px-3">{{ stats.vendor_count }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Invoices Table -->
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+      <h6 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+        <img src="/static_base_icons?name=receipt&fill=%23334155" style="width:18px;height:18px;">
+        {{ t('invoicing.recent_invoices', 'Dernières Factures Enregistrées') }}
+      </h6>
+      <a href="/admin/melodi_invoicing/invoices" class="btn btn-sm btn-outline-primary rounded-pill px-3"
+        style="font-size:0.78rem;">{{ t('invoicing.see_all', 'Voir tout') }}</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 text-sm">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">{{ t('invoicing.number', 'Numéro') }}</th>
+            <th>{{ t('invoicing.contact_party', 'Contact / Tier') }}</th>
+            <th>{{ t('invoicing.type', 'Type') }}</th>
+            <th>{{ t('invoicing.total', 'Total') }}</th>
+            <th>{{ t('invoicing.paid', 'Payé') }}</th>
+            <th>{{ t('common.status', 'Statut') }}</th>
+            <th>{{ t('invoicing.date', 'Date') }}</th>
+            <th class="pe-4 text-end">{{ t('common.actions', 'Action') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if recent_invoices %}
+          {% for inv in recent_invoices %}
+          <tr>
+            <td class="ps-4 fw-bold text-dark">
+              {{ inv.invoice_number or '(Brouillon)' }}
+            </td>
+            <td>
+              {% if inv.contact %}
+              {{ inv.contact.company_name or (inv.contact.first_name + ' ' + inv.contact.last_name) }}
+              {% else %}
+              <span class="text-muted">-</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if inv.invoice_type == InvoiceType.IN_CUSTOMER %}
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ t('invoicing.customer_sale', 'Client') }}</span>
+              {% else %}
+              <span
+                class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">{{ t('invoicing.vendor_purchase', 'Fournisseur') }}</span>
+              {% endif %}
+            </td>
+            <td class="fw-bold text-dark">{{ "%.2f"|format(inv.total_amount) }}</td>
+            <td class="text-success">{{ "%.2f"|format(inv.amount_paid) }}</td>
+            <td>
+              {% if inv.status == InvoiceStatus.DRAFT %}
+              <span class="badge bg-secondary-subtle text-secondary border">{{ t('invoicing.status_draft', 'Brouillon') }}</span>
+              {% elif inv.status == InvoiceStatus.VALIDATED %}
+              <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">{{ t('invoicing.status_validated', 'Validée') }}</span>
+              {% elif inv.status == InvoiceStatus.PARTIALLY_PAID %}
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">{{ t('invoicing.status_partially_paid', 'Partiellement Payée') }}</span>
+              {% elif inv.status == InvoiceStatus.PAID %}
+              <span class="badge bg-success-subtle text-success border border-success-subtle">{{ t('invoicing.status_paid', 'Payée') }}</span>
+              {% elif inv.status == InvoiceStatus.CANCELLED %}
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle">{{ t('invoicing.status_cancelled', 'Annulée') }}</span>
+              {% endif %}
+            </td>
+            <td>{{ inv.created_at.strftime('%d/%m/%Y %H:%M') if inv.created_at else '-' }}</td>
+            <td class="pe-4 text-end">
+              <a href="/admin/melodi_invoicing/invoices/view?invoice_id={{ inv.invoice_id }}"
+                class="btn btn-light btn-xs border">
+                <img src="/static_base_icons?name=visibility&fill=%23475569" style="width:14px;height:14px;">
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="8" class="text-center py-4 text-muted">{{ t('invoicing.no_branch_invoices', 'Aucune facture répertoriée pour cette agence.') }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

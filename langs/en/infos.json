@@ -1,0 +1,12 @@
+{
+  "code": "en",
+  "name": "English",
+  "native_name": "English",
+  "flag": "🇬🇧",
+  "version": "1.0.0",
+  "module": "melodi_invoicing",
+  "min_module_version": "0.1.0",
+  "max_module_version": "99.0.0",
+  "description": "Language pack for invoicing",
+  "author": "BYT3LAB"
+}

@@ -1,0 +1,12 @@
+{
+    "version": "0.1.0",
+    "name": "melodi_invoicing",
+    "title": "Facturation",
+    "description": "Gestion des factures clients, calcul des taxes et génération de PDF.",
+    "type_distribution": "cloud",
+    "depends": {
+        "modules": [
+            "melodi_treasury"
+        ]
+    }
+}

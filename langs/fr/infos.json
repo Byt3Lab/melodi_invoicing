@@ -1,0 +1,12 @@
+{
+  "code": "fr",
+  "name": "Français",
+  "native_name": "Français",
+  "flag": "🇫🇷",
+  "version": "1.0.0",
+  "module": "melodi_invoicing",
+  "min_module_version": "0.1.0",
+  "max_module_version": "99.0.0",
+  "description": "Pack de langue pour la facturation",
+  "author": "BYT3LAB"
+}
